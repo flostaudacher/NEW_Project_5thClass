@@ -1,0 +1,14 @@
+
+use aktien;
+
+create table aktienListe (
+ID int (10) auto_increment primary key,
+	Symbol varchar(50)
+    
+); 
+create table aktie(
+    Symbol int (50) not null,
+    Datum date not null,
+	Zeitpunkt varchar(50) not null,
+    StockValue varchar (50) not null
+);
