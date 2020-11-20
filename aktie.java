@@ -1,9 +1,9 @@
 public class aktie {
 	private String date;
-	private String symbol;
+	private int symbol;
 	private String timestamp;
 	private String value;
-	public aktie(String symbol, String date, String stock, String value) {
+	public aktie(int symbol, String date, String stock, String value) {
 		super();
 		this.date = date;
 		this.symbol = symbol;
@@ -20,10 +20,10 @@ public class aktie {
 	public void setDate(String date) {
 		this.date = date;
 	}
-	public String getSymbol() {
+	public int getSymbol() {
 		return symbol;
 	}
-	public void setSymbol(String symbol) {
+	public void setSymbol(int symbol) {
 		this.symbol = symbol;
 	}
 	public String getTimestamp() {

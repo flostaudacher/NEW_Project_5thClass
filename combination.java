@@ -1,5 +1,7 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.Scanner;
 
 public class combination {
@@ -65,6 +67,33 @@ public class combination {
 	}
 	public static void setCols(int cols) {
 		combination.cols = cols;
+	}
+	static void fillStockArray(String[][] stock) {
+		for (int Rowc = 0; Rowc < combination.getLengthOfNeededArray(); Rowc++) {
+			for (int Colc = 0; Colc < combination.getCols(); Colc++) {
+				String s = "" + combination.CombinationArray[Rowc][Colc];
+				stock[Rowc][Colc] = s;
+			}
+		}
+	}
+	static void pushToDatabase(Connection con, aktie[] a, String[][] stock, DBmanager db) throws SQLException {
+		int Passcounter = 0;
+		int Errorcounter = 0;
+		if (db.stockAlreadyExistsInAktienList(con, download.stockSymbol) == false ){
+			aktienListe l = new aktienListe (1, download.stockSymbol);
+			db.newAktieInAktienListe(con, l);
+		}
+		for (int Rowc = 0; Rowc < combination.getLengthOfNeededArray(); Rowc++) {
+			if (db.stockRowAlreadyExists(con, stock[Rowc][0], stock[Rowc][1]) == false) {
+				a[Rowc] = new aktie(db.getIDfromStock(con, download.stockSymbol),stock[Rowc][0],stock[Rowc][1],stock[Rowc][4]);
+				DBmanager.saveNewSpecificStockValue(con,a[Rowc]);
+				Passcounter++;
+			}
+			else {
+				Errorcounter++;
+			}
+		}
+		System.out.println("Es wurden " + Passcounter + " neue Einträge eingetragen " + Errorcounter + " Einträge waren schon vorhanden");
 	}
 
 }

@@ -33,7 +33,6 @@ public class download {
 		}
 	}
 	private static void setSymbol(String symbol) {
-		// TODO Auto-generated method stub
 		stockSymbol = symbol;
 	}
 	public static String getSymbol() {

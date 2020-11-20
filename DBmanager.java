@@ -26,7 +26,7 @@ public class DBmanager {
 		try {
 			stm = con.prepareStatement(sql);
 			Date date = java.sql.Date.valueOf( stock.getDate());
-			stm.setString(1, stock.getSymbol());		
+			stm.setInt(1, stock.getSymbol());		
 			stm.setDate(2, date);	
 			stm.setString(3, stock.getTimestamp());	
 			stm.setString(4, stock.getValue());	
@@ -37,14 +37,14 @@ public class DBmanager {
 				stm.close();
 		}
 	}
-	public ArrayList<aktie> readStockValues (Connection con, String Symbol) throws SQLException{
+	public ArrayList<aktie> readStockValues (Connection con, int Symbol) throws SQLException{
 		PreparedStatement stm = null;
 		ResultSet rs = null;
 		ArrayList<aktie> result = new ArrayList<aktie>();
 		try {
 			String sql = "select Datum, Zeitpunkt, StockValue from aktie where Symbol = ?";
 			stm = con.prepareStatement(sql);
-			stm.setString(1, Symbol);
+			stm.setInt(1, Symbol);
 			rs = stm.executeQuery();
 			while(rs.next()) {
 				String Datum = rs.getString(1);
@@ -61,14 +61,14 @@ public class DBmanager {
 		}
 		return result;	
 	}
-	public ArrayList<aktie> getMinValueOfDay (Connection con, String Symbol, String date) throws SQLException{
+	public ArrayList<aktie> getMinValueOfDay (Connection con, int Symbol, String date) throws SQLException{
 		PreparedStatement stm = null;
 		ResultSet rs = null;
 		ArrayList<aktie> result = new ArrayList<aktie>();
 		try {
 			String sql = "select Zeitpunkt,StockValue from aktie where Symbol = ? and where Zeitpunkt = ?";
 			stm = con.prepareStatement(sql);
-			stm.setString(1, Symbol);
+			stm.setInt(1, Symbol);
 			Date datum = java.sql.Date.valueOf( date);
 			stm.setDate(2,datum);
 			rs = stm.executeQuery();
@@ -107,6 +107,84 @@ public class DBmanager {
 			}
 		}
 		return result;
+	}
+	public void newAktieInAktienListe(Connection con, aktienListe l) throws SQLException {
+		String sql = "insert into aktienListe (symbol) values (?)";
+		PreparedStatement stm = null;
+		try {
+			stm = con.prepareStatement(sql);
+			stm.setString(1, l.getSymbol());	
+			stm.executeUpdate();
+		}
+		finally {
+			if (stm != null)
+				stm.close();
+		}
+	}
+	public boolean stockAlreadyExistsInAktienList (Connection con, String symbol) throws SQLException {
+		boolean result = false;
+		PreparedStatement stm = null;
+		ResultSet rs = null; 
+		try {
+			String sql = "select count(*) from aktienListe where symbol = ?";
+			stm = con.prepareStatement(sql);
+			stm.setString(1, symbol);
+			rs = stm.executeQuery();
+			if (rs.next()) {
+				int anzahl = rs.getInt(1);
+				result = anzahl == 1;
+			}
+		}
+		finally {
+			if (stm != null) {
+				stm.close();
+			}
+		}
+		return result;
+	}
+	public int getIDfromStock(Connection con, String symbol) throws SQLException {
+		PreparedStatement stm = null;
+		ResultSet rs = null;
+		int result = 0;
+		try {
+			String sql = "select ID from aktienListe where Symbol = ?";
+			stm = con.prepareStatement(sql);
+			stm.setString(1, symbol);
+			rs = stm.executeQuery();
+			while(rs.next()) {
+				result = rs.getInt(1);
+			}
+		}
+		finally
+		{
+			if(stm != null)
+				stm.close();
+		}
+		return result;	
+	}
+	public String getTimeofMinofDay(Connection con, int symbol, String datum) throws SQLException {
+		PreparedStatement stm = null;
+		ResultSet rs = null;
+		String zeitpunkt = "";
+		String minStockValue ="";
+		try {
+			String sql = "select Zeitpunkt,min(StockValue) as minVal from aktie where (Symbol = ? and Datum = ?)";
+			stm = con.prepareStatement(sql);
+			stm.setInt(1, symbol);
+			stm.setString(2, datum);
+			rs = stm.executeQuery();
+			while(rs.next()) {
+				zeitpunkt = rs.getString(1);
+				minStockValue = rs.getString(2);
+			}
+		}
+		finally
+		{
+			if(stm != null)
+				stm.close();
+		}
+		return zeitpunkt;	
+
 	}
 	public void releaseConnection (Connection con) 
 			throws SQLException {
