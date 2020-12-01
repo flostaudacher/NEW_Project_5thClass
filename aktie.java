@@ -12,7 +12,6 @@ public class aktie {
 	}
 	public aktie() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 	public String getDate() {
 		return date;

@@ -26,7 +26,7 @@ public class combination {
 					InputLine = InputLine.replaceAll(" ", ",");
 					String[] inArr = InputLine.split(",");
 					for (int x = 0; x < inArr.length; x++) {
-						CombinationArray[Rowc][x]=inArr[x];
+						CombinationArray[Rowc][x%7]=inArr[x];
 					}
 					Rowc++;
 				}
@@ -34,6 +34,7 @@ public class combination {
 				System.out.println(e);
 			}
 			NewArray();
+			printCombineArray();
 		}
 	}
 	public void printFiles() {

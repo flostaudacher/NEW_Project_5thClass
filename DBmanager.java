@@ -21,11 +21,12 @@ public class DBmanager {
 		return con;
 	}
 	public static void saveNewSpecificStockValue(Connection con, aktie stock) throws SQLException {
-		String sql = "insert into aktie (symbol,Datum,Zeitpunkt,StockValue) values (?,?,?,?)";
+		String sql = "insert into aktie (Symbol,Datum,Zeitpunkt,StockValue) values (?,?,?,?)";
 		PreparedStatement stm = null;
 		try {
 			stm = con.prepareStatement(sql);
-			Date date = java.sql.Date.valueOf( stock.getDate());
+			System.out.println(stock.getDate());
+			Date date = Date.valueOf(stock.getDate());
 			stm.setInt(1, stock.getSymbol());		
 			stm.setDate(2, date);	
 			stm.setString(3, stock.getTimestamp());	
@@ -38,6 +39,7 @@ public class DBmanager {
 		}
 	}
 	public ArrayList<aktie> readStockValues (Connection con, int Symbol) throws SQLException{
+		System.out.println("da ?");
 		PreparedStatement stm = null;
 		ResultSet rs = null;
 		ArrayList<aktie> result = new ArrayList<aktie>();
@@ -52,31 +54,6 @@ public class DBmanager {
 				String StockValue = rs.getString(3);
 				aktie a = new aktie(Symbol,Datum,Zeitpunkt,StockValue);
 				result.add(a);
-			}
-		}
-		finally
-		{
-			if(stm != null)
-				stm.close();
-		}
-		return result;	
-	}
-	public ArrayList<aktie> getMinValueOfDay (Connection con, int Symbol, String date) throws SQLException{
-		PreparedStatement stm = null;
-		ResultSet rs = null;
-		ArrayList<aktie> result = new ArrayList<aktie>();
-		try {
-			String sql = "select Zeitpunkt,StockValue from aktie where Symbol = ? and where Zeitpunkt = ?";
-			stm = con.prepareStatement(sql);
-			stm.setInt(1, Symbol);
-			Date datum = java.sql.Date.valueOf( date);
-			stm.setDate(2,datum);
-			rs = stm.executeQuery();
-			while(rs.next()) {;
-			String Zeitpunkt = rs.getString(1);
-			String StockValue = rs.getString(2);
-			aktie a = new aktie(Symbol,date,Zeitpunkt,StockValue);
-			result.add(a);
 			}
 		}
 		finally
@@ -162,19 +139,18 @@ public class DBmanager {
 		}
 		return result;	
 	}
-	public String getTimeofMinofDay(Connection con, int symbol, String datum) throws SQLException {
+	public String getTimeofMinofDay(Connection con, int symbol) throws SQLException {
 		PreparedStatement stm = null;
 		ResultSet rs = null;
 		String zeitpunkt = "";
 		String minStockValue ="";
 		try {
-			String sql = "select Zeitpunkt,min(StockValue) as minVal from aktie where (Symbol = ? and Datum = ?)";
+			String sql = "select Zeitpunkt,min(StockValue) as minVal from aktie where Symbol = ? group by Datum";
 			stm = con.prepareStatement(sql);
 			stm.setInt(1, symbol);
-			stm.setString(2, datum);
 			rs = stm.executeQuery();
 			while(rs.next()) {
-				zeitpunkt = rs.getString(1);
+				zeitpunkt = rs.getString(1);	
 				minStockValue = rs.getString(2);
 			}
 		}

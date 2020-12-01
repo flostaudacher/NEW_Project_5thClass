@@ -6,9 +6,9 @@ public class main {
 
 	public static void main(String[] args) throws ClassNotFoundException, SQLException {
 		// TODO Auto-generated method stub
+		download.deleteCurrentFiles();
 		DBmanager db = new DBmanager();
 		Connection con = db.getConnection();
-
 		download.deleteCurrentFiles();
 		download.download();
 		combination.combine();
@@ -17,7 +17,5 @@ public class main {
 		combination.fillStockArray(stock);
 		combination.pushToDatabase(con, a, stock,db);
 		System.out.println("Finish !");
-		download.deleteCurrentFiles();
 	}
-	
 }

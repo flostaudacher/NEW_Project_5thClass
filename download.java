@@ -17,6 +17,7 @@ public class download {
 		fillMonthsArray();
 		String symbol = getSymbol();
 		setSymbol(symbol);
+		int zeit = 1;
 		for (int i = 0; i < PARTS_OF_API; i++) {
 			url[i] = createurl(i,symbol);
 			fileName[i] =  fileNameBase + symbol +"_"+ months[i] +".csv";
@@ -30,7 +31,16 @@ public class download {
 			} catch (IOException e) {
 				System.out.println("");
 			}
+			if (i +1 == 5*zeit) {
+				try{
+					zeit++;
+				    Thread.sleep(60000);
+				}catch(InterruptedException e){
+				    e.printStackTrace();
+				}
+			}
 		}
+		zeit = 0;
 	}
 	private static void setSymbol(String symbol) {
 		stockSymbol = symbol;
@@ -42,7 +52,8 @@ public class download {
 		return s;
 	}
 	public static void deleteCurrentFiles() {
-		File[] files = DIRECTORYDATA.listFiles();
+		File location= new File ("C:\\Users\\flost\\eclipse-workspace\\ETF_BACKTESTING_BONUS\\data");
+		File[] files = location.listFiles();
 		for (File file : files) {
 			if (!file.delete()) {
 				System.out.println("failed to delete");
