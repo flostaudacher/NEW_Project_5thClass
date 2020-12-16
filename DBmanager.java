@@ -4,8 +4,10 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-
 
 public class DBmanager {
 	public Connection getConnection() 
@@ -24,8 +26,7 @@ public class DBmanager {
 		String sql = "insert into aktie (Symbol,Datum,Zeitpunkt,StockValue) values (?,?,?,?)";
 		PreparedStatement stm = null;
 		try {
-			stm = con.prepareStatement(sql);
-			System.out.println(stock.getDate());
+			stm = con.prepareStatement(sql);;
 			Date date = Date.valueOf(stock.getDate());
 			stm.setInt(1, stock.getSymbol());		
 			stm.setDate(2, date);	
@@ -39,7 +40,6 @@ public class DBmanager {
 		}
 	}
 	public ArrayList<aktie> readStockValues (Connection con, int Symbol) throws SQLException{
-		System.out.println("da ?");
 		PreparedStatement stm = null;
 		ResultSet rs = null;
 		ArrayList<aktie> result = new ArrayList<aktie>();
@@ -139,19 +139,30 @@ public class DBmanager {
 		}
 		return result;	
 	}
-	public String getTimeofMinofDay(Connection con, int symbol) throws SQLException {
+	public ArrayList<Timestamp> getTimeofMinofDay(Connection con, int symbol) throws SQLException {
 		PreparedStatement stm = null;
 		ResultSet rs = null;
 		String zeitpunkt = "";
 		String minStockValue ="";
+		ArrayList<Timestamp> result = new 	ArrayList<Timestamp> ();
 		try {
-			String sql = "select Zeitpunkt,min(StockValue) as minVal from aktie where Symbol = ? group by Datum";
+			String sql = "select Zeitpunkt,max(StockValue) as minVal from aktie where Symbol = ? group by Datum";
 			stm = con.prepareStatement(sql);
 			stm.setInt(1, symbol);
 			rs = stm.executeQuery();
 			while(rs.next()) {
 				zeitpunkt = rs.getString(1);	
 				minStockValue = rs.getString(2);
+				String pattern = "HH:mm:ss";
+				Timestamp timestamp = null;
+				try {
+					SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+					java.util.Date parsedDate = dateFormat.parse(zeitpunkt);
+					timestamp = new java.sql.Timestamp(parsedDate.getTime());
+				} catch(Exception e) { //this generic but you can control another types of exception
+					// look the origin of excption 
+				}
+				result.add(timestamp);
 			}
 		}
 		finally
@@ -159,8 +170,7 @@ public class DBmanager {
 			if(stm != null)
 				stm.close();
 		}
-		return zeitpunkt;	
-
+		return result;
 	}
 	public void releaseConnection (Connection con) 
 			throws SQLException {

@@ -78,7 +78,7 @@ public class download {
 		String usedMonth = months[Month];
 		String extdendetBaseThree = "&apikey=";
 		String apiKey = "QGEDE2GAG8OY3OBU";
-		String URL = baseURL + symbol +  extdendetBaseOne + interval + extdendetBaseTwo + usedMonth + extdendetBaseThree + apiKey;;
+		String URL = baseURL + symbol +  extdendetBaseOne + interval + extdendetBaseTwo + usedMonth + extdendetBaseThree + apiKey;
 		//System.out.println(URL);
 		return URL;
 	}

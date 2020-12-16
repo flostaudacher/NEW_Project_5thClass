@@ -13,12 +13,10 @@ public class combination {
 	public static void combine() {
 		// TODO Auto-generated method stub
 		Rowc = 0;
-		System.out.println(download.fileName.length);
 		for (int i = download.fileName.length-1 ; i >= 0  ; i = i -1 ) {
 			Scanner sc= null;
 			try 
 			{
-				System.out.println();
 				sc= new Scanner (new BufferedReader(new FileReader(download.fileName[i])));
 				sc.nextLine();
 				while (sc.hasNextLine()) {
@@ -34,7 +32,6 @@ public class combination {
 				System.out.println(e);
 			}
 			NewArray();
-			printCombineArray();
 		}
 	}
 	public void printFiles() {
@@ -87,7 +84,7 @@ public class combination {
 		for (int Rowc = 0; Rowc < combination.getLengthOfNeededArray(); Rowc++) {
 			if (db.stockRowAlreadyExists(con, stock[Rowc][0], stock[Rowc][1]) == false) {
 				a[Rowc] = new aktie(db.getIDfromStock(con, download.stockSymbol),stock[Rowc][0],stock[Rowc][1],stock[Rowc][4]);
-				DBmanager.saveNewSpecificStockValue(con,a[Rowc]);
+				db.saveNewSpecificStockValue(con,a[Rowc]);
 				Passcounter++;
 			}
 			else {
