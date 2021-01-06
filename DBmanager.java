@@ -45,19 +45,21 @@ public class DBmanager {
 				stm.close();
 		}
 	}
-	public ArrayList<aktie> readStockValues (Connection con, int Symbol) throws SQLException{
+	public ArrayList<aktie> readStockValues (Connection con, int Symbol, String time) throws SQLException{
 		PreparedStatement stm = null;
 		ResultSet rs = null;
 		ArrayList<aktie> result = new ArrayList<aktie>();
 		try {
-			String sql = "select Datum, Zeitpunkt, StockValue from aktie where Symbol = ?";
+			String sql = "select * from aktie where Symbol = ? and Zeitpunkt = ? group by Datum";
 			stm = con.prepareStatement(sql);
 			stm.setInt(1, Symbol);
+			stm.setString(2, time);
 			rs = stm.executeQuery();
 			while(rs.next()) {
-				String Datum = rs.getString(1);
-				Time Zeitpunkt = rs.getTime(2);
-				String StockValue = rs.getString(3);
+				int id = rs.getInt(1);
+				String Datum = rs.getString(2);
+				Time Zeitpunkt = rs.getTime(3);
+				String StockValue = rs.getString(4);
 				aktie a = new aktie(Symbol,Datum,Zeitpunkt,StockValue);
 				result.add(a);
 			}
@@ -145,14 +147,19 @@ public class DBmanager {
 		}
 		return result;	
 	}
-	public ArrayList<String> getTimeofMinofDay(Connection con, int symbol) throws SQLException {
+	public ArrayList<String> getTimeofMinOrMaxofDay(Connection con, int symbol, int i) throws SQLException {
 		PreparedStatement stm = null;
+		String sql = "";
+		if (i == 1) {
+			sql = "select Zeitpunkt,min(StockValue) as minVal from aktie where (Symbol = ? and Zeitpunkt between '04:00' and '20:00')group by Datum";
+		} else {
+			sql = "select Zeitpunkt,max(StockValue) as maxVal from aktie where (Symbol = ? and Zeitpunkt between '04:00' and '20:00')group by Datum;";
+		}
 		ResultSet rs = null;
 		String zeitpunkt = "";
 		String minStockValue ="";
 		ArrayList<String> result = new 	ArrayList<String> ();
 		try {
-			String sql = "select Zeitpunkt,min(StockValue) as minVal from aktie where (Symbol = ? and Zeitpunkt between '08:00' and '20:00')group by Datum;";
 			stm = con.prepareStatement(sql);
 			stm.setInt(1, symbol);
 			rs = stm.executeQuery();
@@ -169,6 +176,7 @@ public class DBmanager {
 		}
 		return result;
 	}
+	
 	public void releaseConnection (Connection con) 
 			throws SQLException {
 		if (con != null)

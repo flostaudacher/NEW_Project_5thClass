@@ -1,31 +1,40 @@
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 public class main {
 	public static ArrayList<String> minimalValueTimeList ;
+	public static ArrayList<String> maximalValueTimeList ;
+	public static frequenzy bestTime = null;
+	public static Map<String,Integer> frequenzyMap = new HashMap<String,Integer>();
 	public static void main(String[] args) throws ClassNotFoundException, SQLException, ParseException {
 		download.deleteCurrentFiles();
 		DBmanager db = new DBmanager();
 		Connection con = db.getConnection();
-		download.deleteCurrentFiles();
+		/*download.deleteCurrentFiles();
 		download.download();
-		combination.combine();
+		combination.combine();/*/
 		String [][] stock = new String[combination.getLengthOfNeededArray()][combination.getCols()];
 		aktie[] a = new aktie[combination.getLengthOfNeededArray()];
 		combination.fillStockArray(stock);
 		combination.pushToDatabase(con, a, stock,db);
-		minimalValueTimeList = db.getTimeofMinofDay(con,db.getIDfromStock(con, download.stockSymbol));
-		Map<String,Integer> frequenzyMap = new HashMap<String,Integer>();
-
-		for ( String str : main.minimalValueTimeList) {
+		minimalValueTimeList = db.getTimeofMinOrMaxofDay(con,1, 1); // 1 für min 2 für max
+		String BuyTime = getBuyTime(1,minimalValueTimeList); // für min 
+		//vizualise.main(args);
+		maximalValueTimeList = db.getTimeofMinOrMaxofDay(con,1, 2);
+		String SellTime = getBuyTime(2,maximalValueTimeList); // für min 
+		System.out.println("Verkaufszeitpunkt = " + SellTime + " Kaufszeitpunkt = " + BuyTime );
+		//vizualise.main(args);
+		ArrayList<aktie> möglicheKäufe = db.readStockValues(con, 1, BuyTime);
+	}
+	private static String getBuyTime(int option, ArrayList<String> list) {
+		// TODO Auto-generated method stub
+		ArrayList<frequenzy> FList = new ArrayList<frequenzy>();
+		for ( String str : list) {
 			Integer i = frequenzyMap.get( str);
 			if ( i == null) {
 				i = new Integer( 1);
@@ -34,7 +43,35 @@ public class main {
 			}
 			frequenzyMap.put( str, i);
 		}
-		System.out.println(	minimalValueTimeList);
-		vizualise.main(args);	
+		for (String key : frequenzyMap.keySet()) {
+			frequenzy f = new frequenzy(key,frequenzyMap.get(key));
+			FList.add(f);
+		}
+		bestTime = sortForBestTime(FList);
+		if (option == 1) {
+		System.out.println("Bester Zeitpunkt Uhrzeit = "+ bestTime.getTime() + " Anzahl der Minimalwerte = " + bestTime.getTimesMinVal());
+		return bestTime.getTime();
+		} else {
+			System.out.println("Bester Zeitpunkt Uhrzeit = "+ bestTime.getTime() + " Anzahl der Maximalwerte = " + bestTime.getTimesMinVal());
+			return bestTime.getTime();
+		}
+	}
+	private static frequenzy sortForBestTime(ArrayList<frequenzy> fList) {
+		frequenzy temp;
+		if (fList.size() > 1) // check if the number of orders is larger than 1
+		{
+			for (int x = 0; x < fList.size(); x++) // bubble sort outer loop
+			{ 
+				for (int i=0; i < fList.size() - x - 1; i++) {
+					if (fList.get(i).compareTo(fList.get(i+1)) > 0)
+					{
+						temp = fList.get(i);
+						fList.set(i,fList.get(i+1) );
+						fList.set(i+1, temp);
+					}
+				}
+			}
+		} 
+			return fList.get(fList.size()-1);
 	}
 }
