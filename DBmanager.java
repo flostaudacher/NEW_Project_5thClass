@@ -29,7 +29,7 @@ public class DBmanager {
 		return con;
 	}
 	public static void saveNewSpecificStockValue(Connection con, aktie stock) throws SQLException {
-		String sql = "insert into aktie (Symbol,Datum,Zeitpunkt,StockValue) values (?,?,?,?)";
+		String sql = "insert into aktie (Symbol,Datum,Zeitpunkt,StockValue,Weekday) values (?,?,?,?,?)";
 		PreparedStatement stm = null;
 		try {
 			stm = con.prepareStatement(sql);;
@@ -37,7 +37,8 @@ public class DBmanager {
 			stm.setInt(1, stock.getSymbol());		
 			stm.setDate(2, date);	
 			stm.setTime(3, stock.getTimestamp());	
-			stm.setString(4, stock.getValue());	
+			stm.setString(4, stock.getValue());
+			stm.setString(5,stock.getWeekday());
 			stm.executeUpdate();
 		}
 		finally {
@@ -45,12 +46,12 @@ public class DBmanager {
 				stm.close();
 		}
 	}
-	public ArrayList<aktie> readStockValues (Connection con, int Symbol, String time) throws SQLException{
+	public ArrayList<aktie> readStockValues (Connection con, int Symbol, String time) throws SQLException, ParseException{
 		PreparedStatement stm = null;
 		ResultSet rs = null;
 		ArrayList<aktie> result = new ArrayList<aktie>();
 		try {
-			String sql = "select * from aktie where Symbol = ? and Zeitpunkt = ? group by Datum";
+			String sql = "select Symbol, Datum, Zeitpunkt, StockValue, Weekday from aktie where Symbol = ? and Zeitpunkt = ? group by Datum";
 			stm = con.prepareStatement(sql);
 			stm.setInt(1, Symbol);
 			stm.setString(2, time);
@@ -60,6 +61,7 @@ public class DBmanager {
 				String Datum = rs.getString(2);
 				Time Zeitpunkt = rs.getTime(3);
 				String StockValue = rs.getString(4);
+				String Weekday = rs.getString(5);
 				aktie a = new aktie(Symbol,Datum,Zeitpunkt,StockValue);
 				result.add(a);
 			}

@@ -15,21 +15,22 @@ public class main {
 		download.deleteCurrentFiles();
 		DBmanager db = new DBmanager();
 		Connection con = db.getConnection();
-		/*download.deleteCurrentFiles();
-		download.download();
-		combination.combine();/*/
+		download.deleteCurrentFiles();
+		//download.download();
+		//combination.combine();
+		download.stockSymbol = "TLT";
 		String [][] stock = new String[combination.getLengthOfNeededArray()][combination.getCols()];
 		aktie[] a = new aktie[combination.getLengthOfNeededArray()];
 		combination.fillStockArray(stock);
 		combination.pushToDatabase(con, a, stock,db);
-		minimalValueTimeList = db.getTimeofMinOrMaxofDay(con,1, 1); // 1 für min 2 für max
+		minimalValueTimeList = db.getTimeofMinOrMaxofDay(con,db.getIDfromStock(con, download.stockSymbol), 1); // 1 für min 2 für max
 		String BuyTime = getBuyTime(1,minimalValueTimeList); // für min 
 		//vizualise.main(args);
-		maximalValueTimeList = db.getTimeofMinOrMaxofDay(con,1, 2);
+		maximalValueTimeList = db.getTimeofMinOrMaxofDay(con,db.getIDfromStock(con, download.stockSymbol), 2);
 		String SellTime = getBuyTime(2,maximalValueTimeList); // für min 
-		System.out.println("Verkaufszeitpunkt = " + SellTime + " Kaufszeitpunkt = " + BuyTime );
 		//vizualise.main(args);
-		ArrayList<aktie> möglicheKäufe = db.readStockValues(con, 1, BuyTime);
+		ArrayList<aktie> moeglicheKaufe = db.readStockValues(con, 1, BuyTime);
+		System.out.println(moeglicheKaufe);
 	}
 	private static String getBuyTime(int option, ArrayList<String> list) {
 		// TODO Auto-generated method stub
