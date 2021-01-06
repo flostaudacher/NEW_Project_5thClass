@@ -2,6 +2,8 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Time;
+import java.text.ParseException;
 import java.util.Scanner;
 
 public class combination {
@@ -11,7 +13,6 @@ public class combination {
 	private static int Rowc;
 	private static int lengthOfNeededArray;
 	public static void combine() {
-		// TODO Auto-generated method stub
 		Rowc = 0;
 		for (int i = download.fileName.length-1 ; i >= 0  ; i = i -1 ) {
 			Scanner sc= null;
@@ -74,7 +75,7 @@ public class combination {
 			}
 		}
 	}
-	static void pushToDatabase(Connection con, aktie[] a, String[][] stock, DBmanager db) throws SQLException {
+	static void pushToDatabase(Connection con, aktie[] a, String[][] stock, DBmanager db) throws SQLException, ParseException {
 		int Passcounter = 0;
 		int Errorcounter = 0;
 		if (db.stockAlreadyExistsInAktienList(con, download.stockSymbol) == false ){
@@ -83,7 +84,7 @@ public class combination {
 		}
 		for (int Rowc = 0; Rowc < combination.getLengthOfNeededArray(); Rowc++) {
 			if (db.stockRowAlreadyExists(con, stock[Rowc][0], stock[Rowc][1]) == false) {
-				a[Rowc] = new aktie(db.getIDfromStock(con, download.stockSymbol),stock[Rowc][0],stock[Rowc][1],stock[Rowc][4]);
+				a[Rowc] = new aktie(db.getIDfromStock(con, download.stockSymbol),stock[Rowc][0],toSQLTime(stock[Rowc][1]),stock[Rowc][4]);
 				db.saveNewSpecificStockValue(con,a[Rowc]);
 				Passcounter++;
 			}
@@ -92,6 +93,10 @@ public class combination {
 			}
 		}
 		System.out.println("Es wurden " + Passcounter + " neue Einträge eingetragen " + Errorcounter + " Einträge waren schon vorhanden");
+	}
+	private static Time toSQLTime(String string) throws ParseException {
+		java.sql.Time sqlTime = Time.valueOf(string);
+		return sqlTime;
 	}
 
 }

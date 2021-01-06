@@ -4,10 +4,16 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Time;
 import java.sql.Timestamp;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
 public class DBmanager {
 	public Connection getConnection() 
@@ -30,7 +36,7 @@ public class DBmanager {
 			Date date = Date.valueOf(stock.getDate());
 			stm.setInt(1, stock.getSymbol());		
 			stm.setDate(2, date);	
-			stm.setString(3, stock.getTimestamp());	
+			stm.setTime(3, stock.getTimestamp());	
 			stm.setString(4, stock.getValue());	
 			stm.executeUpdate();
 		}
@@ -50,7 +56,7 @@ public class DBmanager {
 			rs = stm.executeQuery();
 			while(rs.next()) {
 				String Datum = rs.getString(1);
-				String Zeitpunkt = rs.getString(2);
+				Time Zeitpunkt = rs.getTime(2);
 				String StockValue = rs.getString(3);
 				aktie a = new aktie(Symbol,Datum,Zeitpunkt,StockValue);
 				result.add(a);
@@ -139,30 +145,21 @@ public class DBmanager {
 		}
 		return result;	
 	}
-	public ArrayList<Timestamp> getTimeofMinofDay(Connection con, int symbol) throws SQLException {
+	public ArrayList<String> getTimeofMinofDay(Connection con, int symbol) throws SQLException {
 		PreparedStatement stm = null;
 		ResultSet rs = null;
 		String zeitpunkt = "";
 		String minStockValue ="";
-		ArrayList<Timestamp> result = new 	ArrayList<Timestamp> ();
+		ArrayList<String> result = new 	ArrayList<String> ();
 		try {
-			String sql = "select Zeitpunkt,max(StockValue) as minVal from aktie where Symbol = ? group by Datum";
+			String sql = "select Zeitpunkt,min(StockValue) as minVal from aktie where (Symbol = ? and Zeitpunkt between '08:00' and '20:00')group by Datum;";
 			stm = con.prepareStatement(sql);
 			stm.setInt(1, symbol);
 			rs = stm.executeQuery();
 			while(rs.next()) {
 				zeitpunkt = rs.getString(1);	
 				minStockValue = rs.getString(2);
-				String pattern = "HH:mm:ss";
-				Timestamp timestamp = null;
-				try {
-					SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
-					java.util.Date parsedDate = dateFormat.parse(zeitpunkt);
-					timestamp = new java.sql.Timestamp(parsedDate.getTime());
-				} catch(Exception e) { //this generic but you can control another types of exception
-					// look the origin of excption 
-				}
-				result.add(timestamp);
+				result.add(zeitpunkt);
 			}
 		}
 		finally
