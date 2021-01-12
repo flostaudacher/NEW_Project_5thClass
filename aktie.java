@@ -108,7 +108,7 @@ public class aktie {
 		}
 		for (int dayCounter = 0; dayCounter < days.length; dayCounter++) {
 			if (s.equals(days[dayCounter])) {
-				return days[dayCounter];
+				return days[dayCounter+1];
 			}
 		}
 		return "";

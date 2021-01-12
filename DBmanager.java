@@ -46,15 +46,16 @@ public class DBmanager {
 				stm.close();
 		}
 	}
-	public ArrayList<aktie> readStockValues (Connection con, int Symbol, String time) throws SQLException, ParseException{
+	public ArrayList<aktie> readStockValues (Connection con, int Symbol, String time, String Buyday) throws SQLException, ParseException{
 		PreparedStatement stm = null;
 		ResultSet rs = null;
 		ArrayList<aktie> result = new ArrayList<aktie>();
 		try {
-			String sql = "select Symbol, Datum, Zeitpunkt, StockValue, Weekday from aktie where Symbol = ? and Zeitpunkt = ? group by Datum";
+			String sql = "select Symbol, Datum, Zeitpunkt, StockValue, Weekday from aktie where Symbol = ? and Zeitpunkt = ? and Weekday = ? group by Datum order by Datum";
 			stm = con.prepareStatement(sql);
 			stm.setInt(1, Symbol);
 			stm.setString(2, time);
+			stm.setString(3,Buyday);
 			rs = stm.executeQuery();
 			while(rs.next()) {
 				int id = rs.getInt(1);
@@ -63,6 +64,7 @@ public class DBmanager {
 				String StockValue = rs.getString(4);
 				String Weekday = rs.getString(5);
 				aktie a = new aktie(Symbol,Datum,Zeitpunkt,StockValue);
+				a.setWeekday(Weekday);
 				result.add(a);
 			}
 		}

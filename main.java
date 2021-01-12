@@ -16,9 +16,8 @@ public class main {
 		DBmanager db = new DBmanager();
 		Connection con = db.getConnection();
 		download.deleteCurrentFiles();
-		//download.download();
-		//combination.combine();
-		download.stockSymbol = "TLT";
+		download.download();
+		combination.combine();
 		String [][] stock = new String[combination.getLengthOfNeededArray()][combination.getCols()];
 		aktie[] a = new aktie[combination.getLengthOfNeededArray()];
 		combination.fillStockArray(stock);
@@ -29,8 +28,9 @@ public class main {
 		maximalValueTimeList = db.getTimeofMinOrMaxofDay(con,db.getIDfromStock(con, download.stockSymbol), 2);
 		String SellTime = getBuyTime(2,maximalValueTimeList); // für min 
 		//vizualise.main(args);
-		ArrayList<aktie> moeglicheKaufe = db.readStockValues(con, 1, BuyTime);
-		System.out.println(moeglicheKaufe);
+		ArrayList<aktie> Kaufe = db.readStockValues(con, db.getIDfromStock(con, download.stockSymbol), BuyTime,"Fr");
+		ArrayList<aktie> Verkaufe = db.readStockValues(con, db.getIDfromStock(con, download.stockSymbol), SellTime,"Mo");
+		System.out.println(umsertzungStrategie.handel(Kaufe,Verkaufe));
 	}
 	private static String getBuyTime(int option, ArrayList<String> list) {
 		// TODO Auto-generated method stub
