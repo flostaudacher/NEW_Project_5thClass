@@ -29,7 +29,9 @@ public class main {
 		String SellTime = getBuyTime(2,maximalValueTimeList); // für min 
 		//vizualise.main(args);
 		ArrayList<aktie> Kaufe = db.readStockValues(con, db.getIDfromStock(con, download.stockSymbol), BuyTime,"Fr");
+		System.out.println(Kaufe);
 		ArrayList<aktie> Verkaufe = db.readStockValues(con, db.getIDfromStock(con, download.stockSymbol), SellTime,"Mo");
+		System.out.println(Verkaufe);
 		System.out.println(umsertzungStrategie.handel(Kaufe,Verkaufe));
 	}
 	private static String getBuyTime(int option, ArrayList<String> list) {

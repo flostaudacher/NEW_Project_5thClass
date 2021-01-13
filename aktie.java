@@ -9,7 +9,7 @@ public class aktie {
 	private Time timestamp;
 	private String value;
 	private String Weekday;
-	static String [] days = {"Mo","Di","Mi","Do","Fr"};
+	static String [] days = {"Mo","Di","Mi","Do","Fr","Sa","So"};
 	public String getDate() {
 		return date;
 	}
@@ -108,7 +108,7 @@ public class aktie {
 		}
 		for (int dayCounter = 0; dayCounter < days.length; dayCounter++) {
 			if (s.equals(days[dayCounter])) {
-				return days[dayCounter+1];
+				return days[dayCounter];
 			}
 		}
 		return "";
