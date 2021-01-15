@@ -16,23 +16,19 @@ public class main {
 		DBmanager db = new DBmanager();
 		Connection con = db.getConnection();
 		download.deleteCurrentFiles();
-		download.download();
-		combination.combine();
+	//	download.download();
+		//combination.combine();
+		download.stockSymbol="GLD";
 		String [][] stock = new String[combination.getLengthOfNeededArray()][combination.getCols()];
 		aktie[] a = new aktie[combination.getLengthOfNeededArray()];
 		combination.fillStockArray(stock);
 		combination.pushToDatabase(con, a, stock,db);
 		minimalValueTimeList = db.getTimeofMinOrMaxofDay(con,db.getIDfromStock(con, download.stockSymbol), 1); // 1 für min 2 für max
 		String BuyTime = getBuyTime(1,minimalValueTimeList); // für min 
-		//vizualise.main(args);
 		maximalValueTimeList = db.getTimeofMinOrMaxofDay(con,db.getIDfromStock(con, download.stockSymbol), 2);
 		String SellTime = getBuyTime(2,maximalValueTimeList); // für min 
-		//vizualise.main(args);
-		ArrayList<aktie> Kaufe = db.readStockValues(con, db.getIDfromStock(con, download.stockSymbol), BuyTime,"Fr");
-		System.out.println(Kaufe);
-		ArrayList<aktie> Verkaufe = db.readStockValues(con, db.getIDfromStock(con, download.stockSymbol), SellTime,"Mo");
-		System.out.println(Verkaufe);
-		System.out.println(umsertzungStrategie.handel(Kaufe,Verkaufe));
+		ArrayList<aktie> eintrage = db.readStockValues(con, db.getIDfromStock(con, download.stockSymbol));
+		umsertzungStrategie.handel(eintrage, BuyTime, SellTime);
 	}
 	private static String getBuyTime(int option, ArrayList<String> list) {
 		// TODO Auto-generated method stub
@@ -61,9 +57,9 @@ public class main {
 	}
 	private static frequenzy sortForBestTime(ArrayList<frequenzy> fList) {
 		frequenzy temp;
-		if (fList.size() > 1) // check if the number of orders is larger than 1
+		if (fList.size() > 1) 
 		{
-			for (int x = 0; x < fList.size(); x++) // bubble sort outer loop
+			for (int x = 0; x < fList.size(); x++) 
 			{ 
 				for (int i=0; i < fList.size() - x - 1; i++) {
 					if (fList.get(i).compareTo(fList.get(i+1)) > 0)

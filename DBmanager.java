@@ -37,7 +37,7 @@ public class DBmanager {
 			stm.setInt(1, stock.getSymbol());		
 			stm.setDate(2, date);	
 			stm.setTime(3, stock.getTimestamp());	
-			stm.setString(4, stock.getValue());
+			stm.setFloat(4, stock.getValue());
 			stm.setString(5,stock.getWeekday());
 			stm.executeUpdate();
 		}
@@ -46,22 +46,21 @@ public class DBmanager {
 				stm.close();
 		}
 	}
-	public ArrayList<aktie> readStockValues (Connection con, int Symbol, String time, String Buyday) throws SQLException, ParseException{
+	public ArrayList<aktie> readStockValues (Connection con, int Symbol) throws SQLException, ParseException{
 		PreparedStatement stm = null;
 		ResultSet rs = null;
 		ArrayList<aktie> result = new ArrayList<aktie>();
 		try {
-			String sql = "select Symbol, Datum, Zeitpunkt, StockValue, Weekday from aktie where Symbol = ? and Zeitpunkt = ? and Weekday = ? group by Datum order by Datum";
+			String sql = "select Symbol, Datum, Zeitpunkt, StockValue, Weekday from aktie where Symbol = ? order by Datum ASC";
 			stm = con.prepareStatement(sql);
 			stm.setInt(1, Symbol);
-			stm.setString(2, time);
-			stm.setString(3,Buyday);
 			rs = stm.executeQuery();
 			while(rs.next()) {
 				int id = rs.getInt(1);
 				String Datum = rs.getString(2);
 				Time Zeitpunkt = rs.getTime(3);
-				String StockValue = rs.getString(4);
+				Zeitpunkt.setHours(Zeitpunkt.getHours()-1); // lehrer fragen wieso um eine stunde versetzt 
+				float StockValue = rs.getFloat(4);
 				String Weekday = rs.getString(5);
 				aktie a = new aktie(Symbol,Datum,Zeitpunkt,StockValue);
 				a.setWeekday(Weekday);
@@ -73,6 +72,7 @@ public class DBmanager {
 			if(stm != null)
 				stm.close();
 		}
+		System.out.println(result.size());
 		return result;	
 	}
 	public boolean stockRowAlreadyExists(Connection con, String datum, String zeitpunkt) throws SQLException{
@@ -155,9 +155,9 @@ public class DBmanager {
 		PreparedStatement stm = null;
 		String sql = "";
 		if (i == 1) {
-			sql = "select Zeitpunkt,min(StockValue) as minVal from aktie where (Symbol = ? and Zeitpunkt between '04:00' and '20:00')group by Datum";
+			sql = "Select A.Datum, A.Zeitpunkt, B.minVal from aktie as A inner join (select Datum,min(StockValue) as minVal from aktie where (Symbol = ?) group by Datum) as B on A.StockValue = B.minVal and A.Datum = B.Datum";
 		} else {
-			sql = "select Zeitpunkt,max(StockValue) as maxVal from aktie where (Symbol = ? and Zeitpunkt between '04:00' and '20:00')group by Datum;";
+			sql = "Select A.Datum, A.Zeitpunkt, B.maxVal from aktie as A inner join (select Datum,max(StockValue) as maxVal from aktie where (Symbol = ?) group by Datum) as B on A.StockValue = B.maxVal and A.Datum = B.Datum";
 		}
 		ResultSet rs = null;
 		String zeitpunkt = "";
@@ -168,8 +168,9 @@ public class DBmanager {
 			stm.setInt(1, symbol);
 			rs = stm.executeQuery();
 			while(rs.next()) {
-				zeitpunkt = rs.getString(1);	
-				minStockValue = rs.getString(2);
+				Date Datum = rs.getDate(1);
+				zeitpunkt = rs.getString(2);	
+				minStockValue = rs.getString(3);
 				result.add(zeitpunkt);
 			}
 		}
