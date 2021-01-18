@@ -26,11 +26,12 @@ public class main {
 		minimalValueTimeList = db.getTimeofMinOrMaxofDay(con,db.getIDfromStock(con, download.stockSymbol), 1); // 1 für min 2 für max
 		String BuyTime = getBuyTime(1,minimalValueTimeList); // für min 
 		maximalValueTimeList = db.getTimeofMinOrMaxofDay(con,db.getIDfromStock(con, download.stockSymbol), 2);
-		String SellTime = getBuyTime(2,maximalValueTimeList); // für min 
+		String SellTime = getBuyTime(2,maximalValueTimeList); // für max 
 		ArrayList<aktie> eintrage = db.readStockValues(con, db.getIDfromStock(con, download.stockSymbol));
 		umsertzungStrategie.handel(eintrage, BuyTime, SellTime);
+		Datavizualise.main(args);
 	}
-	private static String getBuyTime(int option, ArrayList<String> list) {
+	static String getBuyTime(int option, ArrayList<String> list) {
 		// TODO Auto-generated method stub
 		ArrayList<frequenzy> FList = new ArrayList<frequenzy>();
 		for ( String str : list) {

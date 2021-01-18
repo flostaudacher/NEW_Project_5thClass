@@ -7,7 +7,7 @@ public class umsertzungStrategie {
 	private static int stückzahl = 0;
 	static double buyValue;
 	static double sellValue;
-	static ArrayList<Trade> History = new ArrayList<Trade>();
+	public static ArrayList<Trade> History = new ArrayList<Trade>();
 	static String s = "Fr";
 	
 	public static String handel(ArrayList<aktie> handel, String buyTime, String sellTime) {
@@ -27,7 +27,6 @@ public class umsertzungStrategie {
 				
 
 			}
-			//System.out.println(handel.get(Rowc).getWeekday() + " != " + dayOfBuy + " & " + toString(handel.get(Rowc).getTimestamp()) + " = " + sellTime);
 			VerkaufExcepted = (!handel.get(Rowc).getWeekday().equals(dayOfBuy)) && toString(handel.get(Rowc).getTimestamp()).equals(sellTime);
 			if (VerkaufExcepted == true && kaufe == 1) {
 				SellStock(handel.get(Rowc));
@@ -39,7 +38,6 @@ public class umsertzungStrategie {
 				stückzahl = 0;
 			}
 		}
-		System.out.println("Depot vor 2 Jahren = " + 10000 + " Depot heute = " + History.get(History.size()-1).getDepotWert());
 		return s;
 	}
 	public static String toString(Time timestamp) {
@@ -52,7 +50,6 @@ public class umsertzungStrategie {
 		stückzahl = (int) ((depotValue - 5) / (ValueBuy)); // formel wo die Gebühren hin gehören
 		buyValue = ValueBuy;
 		depotValue = depotValue - stückzahl * (ValueBuy);
-		System.out.print("Kaufe um = " + buyValue + "\t");
 	}
 
 
@@ -60,7 +57,6 @@ public class umsertzungStrategie {
 		double ValueSell = a.getValue(); 
 		depotValue = depotValue + stückzahl * (ValueSell);
 		sellValue = ValueSell;
-		System.out.print("Verkaufe um = " + sellValue + "\t");
 
 	}
 	public static double getValueAtSell() {

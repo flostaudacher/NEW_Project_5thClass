@@ -1,12 +1,12 @@
 import java.util.Date;
 
 public class Trade {
-	String datum = null;
-	Double depotWert =  0.0;
-	int positionen = 0;
-	double kaufWert = 0;
-	double verkaufWert = 0;
-	boolean erfolg = false;
+	private String datum = null;
+	private Double depotWert =  0.0;
+	private int positionen = 0;
+	private double kaufWert = 0;
+	private double verkaufWert = 0;
+	private boolean erfolg = false;
 	public Trade() {
 		super();
 		// TODO Auto-generated constructor stub
