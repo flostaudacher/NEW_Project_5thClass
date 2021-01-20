@@ -83,13 +83,14 @@ public class combination {
 			db.newAktieInAktienListe(con, l);
 		}
 		for (int Rowc = 0; Rowc < combination.getLengthOfNeededArray(); Rowc++) {
-			if (db.stockRowAlreadyExists(con, stock[Rowc][0], stock[Rowc][1]) == false) {
+			boolean okay = db.stockRowAlreadyExists(con,db.getIDfromStock(con, download.stockSymbol),stock[Rowc][0], stock[Rowc][1]);
+			if (okay==true) {
 				float val =Float.parseFloat(stock[Rowc][4]);
 				a[Rowc] = new aktie(db.getIDfromStock(con, download.stockSymbol),stock[Rowc][0],toSQLTime(stock[Rowc][1]),val);
 				db.saveNewSpecificStockValue(con,a[Rowc]);
 				Passcounter++;
 			}
-			else {
+			if (okay==false) {
 				Errorcounter++;
 			}
 		}

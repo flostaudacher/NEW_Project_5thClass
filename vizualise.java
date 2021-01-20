@@ -24,11 +24,11 @@ public class vizualise extends Application {
 		// Series 1 - Data of 2014
 		Series<String, Number> dataSeries1 = new XYChart.Series<String, Number>();
 		dataSeries1.setName("lol");
-		
+
 		for (String key : main.frequenzyMap.keySet()) {
 			dataSeries1.getData().add(new XYChart.Data<String, Number>(key, main.frequenzyMap.get(key)));
 		}
-		
+
 		barChart.getData().add(dataSeries1);
 		barChart.setTitle("Frequenzy");
 

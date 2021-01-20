@@ -16,9 +16,9 @@ public class main {
 		DBmanager db = new DBmanager();
 		Connection con = db.getConnection();
 		download.deleteCurrentFiles();
-	//	download.download();
-		//combination.combine();
-		download.stockSymbol="GLD";
+		download.download();
+		combination.combine();
+		//download.stockSymbol="GLD";
 		String [][] stock = new String[combination.getLengthOfNeededArray()][combination.getCols()];
 		aktie[] a = new aktie[combination.getLengthOfNeededArray()];
 		combination.fillStockArray(stock);
@@ -49,8 +49,8 @@ public class main {
 		}
 		bestTime = sortForBestTime(FList);
 		if (option == 1) {
-		System.out.println("Bester Zeitpunkt Uhrzeit = "+ bestTime.getTime() + " Anzahl der Minimalwerte = " + bestTime.getTimesMinVal());
-		return bestTime.getTime();
+			System.out.println("Bester Zeitpunkt Uhrzeit = "+ bestTime.getTime() + " Anzahl der Minimalwerte = " + bestTime.getTimesMinVal());
+			return bestTime.getTime();
 		} else {
 			System.out.println("Bester Zeitpunkt Uhrzeit = "+ bestTime.getTime() + " Anzahl der Maximalwerte = " + bestTime.getTimesMinVal());
 			return bestTime.getTime();
@@ -72,6 +72,6 @@ public class main {
 				}
 			}
 		} 
-			return fList.get(fList.size()-1);
+		return fList.get(fList.size()-1);
 	}
 }

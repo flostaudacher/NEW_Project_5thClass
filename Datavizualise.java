@@ -26,7 +26,7 @@ public class Datavizualise extends Application{
 		barchartMin =  barChart.Barchart(1);
 		barchartMax = barChart.Barchart(2);
 		tabelle = table.tableCreat();
-		
+
 		flowpane.getChildren().addAll(areaChart,barchartChance,barchartMin,barchartMax,tabelle);
 
 		flowpane.setVgap(100);

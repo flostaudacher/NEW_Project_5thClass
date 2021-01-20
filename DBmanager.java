@@ -35,7 +35,8 @@ public class DBmanager {
 			stm = con.prepareStatement(sql);;
 			Date date = Date.valueOf(stock.getDate());
 			stm.setInt(1, stock.getSymbol());		
-			stm.setDate(2, date);	
+			stm.setDate(2, date);
+			System.out.println(stock.getDate() + "  &  " + stock.getTimestamp()); // hier fragen wieso dieser Tag und der Tag der tatsächlich eingetragen wird sich unterscheiden
 			stm.setTime(3, stock.getTimestamp());	
 			stm.setFloat(4, stock.getValue());
 			stm.setString(5,stock.getWeekday());
@@ -75,15 +76,16 @@ public class DBmanager {
 		System.out.println(result.size());
 		return result;	
 	}
-	public boolean stockRowAlreadyExists(Connection con, String datum, String zeitpunkt) throws SQLException{
+	public boolean stockRowAlreadyExists(Connection con, int i, String datum, String zeitpunkt) throws SQLException{
 		boolean result = false;
 		PreparedStatement stm = null;
 		ResultSet rs = null; 
 		try {
-			String sql = "select count(*) from aktie where Datum = ? and Zeitpunkt = ?";
+			String sql = "select count(*) from aktie where (Symbol = ? and Datum = ? and Zeitpunkt = ?)";
 			stm = con.prepareStatement(sql);
-			stm.setString(1, datum);
-			stm.setString(2, zeitpunkt);
+			stm.setInt(1,i);
+			stm.setString(2, datum);
+			stm.setString(3, zeitpunkt);
 			rs = stm.executeQuery();
 			if (rs.next()) {
 				int anzahl = rs.getInt(1);
@@ -95,7 +97,7 @@ public class DBmanager {
 				stm.close();
 			}
 		}
-		return result;
+		return !result;
 	}
 	public void newAktieInAktienListe(Connection con, aktienListe l) throws SQLException {
 		String sql = "insert into aktienListe (symbol) values (?)";
@@ -181,7 +183,7 @@ public class DBmanager {
 		}
 		return result;
 	}
-	
+
 	public void releaseConnection (Connection con) 
 			throws SQLException {
 		if (con != null)

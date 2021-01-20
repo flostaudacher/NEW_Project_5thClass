@@ -21,7 +21,7 @@ public class barChart extends Pane{
 			xAxis.setLabel("Chance");
 			yAxis.setLabel("Chance for positiv/negativ Trade");
 			barChart.setTitle("Positiv/Negativ");
-			data.setName("Backtesting result if you try the tactic with 10k in the year 2010");
+			data.setName("Hitratio");
 			barChart.getData().addAll(barChartMethods.create(new XYChart.Series<String, Number>(), "positiv"));	
 			barChart.getData().addAll(barChartMethods.create(new XYChart.Series<String, Number>(), "negativ"));	
 		}
@@ -40,7 +40,7 @@ public class barChart extends Pane{
 			barChart.getData().addAll(barChartMethods.createdforMax(new XYChart.Series<String,Number>()));
 		}
 		barChart.setCategoryGap(20);
-		
+
 		return barChart;
 	}
 }

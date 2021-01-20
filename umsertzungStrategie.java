@@ -8,8 +8,8 @@ public class umsertzungStrategie {
 	static double buyValue;
 	static double sellValue;
 	public static ArrayList<Trade> History = new ArrayList<Trade>();
-	static String s = "Fr";
-	
+	static String s = "Mo";
+
 	public static String handel(ArrayList<aktie> handel, String buyTime, String sellTime) {
 		String dayOfBuy = null; 
 		boolean KaufExcepted = false;
@@ -17,15 +17,17 @@ public class umsertzungStrategie {
 		int zaehlerVerkauf = 0;
 		int zaehlerKauf = 0;
 		int kaufe =0 ;
-		for (int Rowc = 1; Rowc < handel.size(); Rowc++) {
+		for (int Rowc = 0; Rowc < handel.size(); Rowc++) {
+			if (handel.get(Rowc).getWeekday().equals(s)) {
+				System.out.println(handel.get(Rowc).getTimestamp() + " = "+ buyTime);
+			}
 			KaufExcepted = handel.get(Rowc).getWeekday().equals(s) && toString(handel.get(Rowc).getTimestamp()).equals(buyTime);
 			if (KaufExcepted == true && kaufe != 1) {
 				dayOfBuy = handel.get(Rowc).getWeekday();
 				buyStock(handel.get(Rowc));
 				zaehlerKauf++;
 				kaufe  = 1;
-				
-
+				System.out.println(zaehlerKauf);
 			}
 			VerkaufExcepted = (!handel.get(Rowc).getWeekday().equals(dayOfBuy)) && toString(handel.get(Rowc).getTimestamp()).equals(sellTime);
 			if (VerkaufExcepted == true && kaufe == 1) {
