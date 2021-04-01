@@ -1,6 +1,10 @@
 import java.sql.Time;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 public class aktie {
@@ -43,10 +47,18 @@ public class aktie {
 	public aktie(int symbol, String date, Time timestamp, float value) throws ParseException {
 		super();
 		this.date = date;
-		this.symbol = symbol;
 		this.timestamp = timestamp;
+		this.symbol = symbol;
 		this.value = value;
 		Weekday = calcWeekday(date);
+	}
+	public static String correctTheDate(String falseDate, String falsetime) throws ParseException {
+		String s = falseDate +" "+falsetime;
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+		LocalDateTime parse = LocalDateTime.parse(s, formatter);
+		ZoneId of = ZoneId.of("America/New_York");
+		String trueDateUnedited= "" + parse.atZone(of).withZoneSameInstant(ZoneOffset.UTC);
+		return trueDateUnedited;
 	}
 	public aktie() {
 		super();

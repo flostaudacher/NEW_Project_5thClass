@@ -36,7 +36,7 @@ public class DBmanager {
 			Date date = Date.valueOf(stock.getDate());
 			stm.setInt(1, stock.getSymbol());		
 			stm.setDate(2, date);
-			System.out.println(stock.getDate() + "  &  " + stock.getTimestamp()); // hier fragen wieso dieser Tag und der Tag der tatsächlich eingetragen wird sich unterscheiden
+			//System.out.println(stock.getDate() + "  &  " + stock.getTimestamp()); // hier fragen wieso dieser Tag und der Tag der tatsächlich eingetragen wird sich unterscheiden
 			stm.setTime(3, stock.getTimestamp());	
 			stm.setFloat(4, stock.getValue());
 			stm.setString(5,stock.getWeekday());

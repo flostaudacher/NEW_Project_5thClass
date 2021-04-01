@@ -17,12 +17,12 @@ public class main {
 		Connection con = db.getConnection();
 		download.deleteCurrentFiles();
 		download.download();
-		combination.combine();
-		//download.stockSymbol="GLD";
-		String [][] stock = new String[combination.getLengthOfNeededArray()][combination.getCols()];
+		//combination.combine();
+		/*String [][] stock = new String[combination.getLengthOfNeededArray()][combination.getCols()];
 		aktie[] a = new aktie[combination.getLengthOfNeededArray()];
 		combination.fillStockArray(stock);
-		combination.pushToDatabase(con, a, stock,db);
+		combination.pushToDatabase(con, a, stock,db);*/
+		combination.VonCSVinDatenbank(con, db);
 		minimalValueTimeList = db.getTimeofMinOrMaxofDay(con,db.getIDfromStock(con, download.stockSymbol), 1); // 1 für min 2 für max
 		String BuyTime = getBuyTime(1,minimalValueTimeList); // für min 
 		maximalValueTimeList = db.getTimeofMinOrMaxofDay(con,db.getIDfromStock(con, download.stockSymbol), 2);
@@ -58,6 +58,7 @@ public class main {
 	}
 	private static frequenzy sortForBestTime(ArrayList<frequenzy> fList) {
 		frequenzy temp;
+		System.out.println(fList);
 		if (fList.size() > 1) 
 		{
 			for (int x = 0; x < fList.size(); x++) 

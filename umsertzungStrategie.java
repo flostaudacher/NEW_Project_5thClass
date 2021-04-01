@@ -18,16 +18,12 @@ public class umsertzungStrategie {
 		int zaehlerKauf = 0;
 		int kaufe =0 ;
 		for (int Rowc = 0; Rowc < handel.size(); Rowc++) {
-			if (handel.get(Rowc).getWeekday().equals(s)) {
-				System.out.println(handel.get(Rowc).getTimestamp() + " = "+ buyTime);
-			}
 			KaufExcepted = handel.get(Rowc).getWeekday().equals(s) && toString(handel.get(Rowc).getTimestamp()).equals(buyTime);
 			if (KaufExcepted == true && kaufe != 1) {
 				dayOfBuy = handel.get(Rowc).getWeekday();
 				buyStock(handel.get(Rowc));
 				zaehlerKauf++;
 				kaufe  = 1;
-				System.out.println(zaehlerKauf);
 			}
 			VerkaufExcepted = (!handel.get(Rowc).getWeekday().equals(dayOfBuy)) && toString(handel.get(Rowc).getTimestamp()).equals(sellTime);
 			if (VerkaufExcepted == true && kaufe == 1) {
