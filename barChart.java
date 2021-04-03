@@ -14,17 +14,6 @@ public class barChart extends Pane{
 		NumberAxis yAxis= new NumberAxis();
 		BarChart<String, Number> barChart = new BarChart<>(xAxis,yAxis);
 		XYChart.Series<Number, Number> data = new XYChart.Series<Number, Number>();
-		barChartMethods.calcChance();
-		if (Option == 0) {
-			xAxis.setCategories(FXCollections.<String>
-			observableArrayList(Arrays.asList("positiv", "negativ")));
-			xAxis.setLabel("Chance");
-			yAxis.setLabel("Chance for positiv/negativ Trade");
-			barChart.setTitle("Positiv/Negativ");
-			data.setName("Hitratio");
-			barChart.getData().addAll(barChartMethods.create(new XYChart.Series<String, Number>(), "positiv"));	
-			barChart.getData().addAll(barChartMethods.create(new XYChart.Series<String, Number>(), "negativ"));	
-		}
 		if (Option == 1 ) {
 			xAxis.setLabel("Times");
 			yAxis.setLabel("Times of minval");

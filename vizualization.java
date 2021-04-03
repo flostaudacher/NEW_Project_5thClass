@@ -11,7 +11,6 @@ public class vizualization extends Pane {
 		xAxis.setLabel("times traded");
 		NumberAxis yAxis= new NumberAxis();
 		yAxis.setLabel("Depot Value");
-
 		AreaChart<Number, Number> areaChart = new AreaChart<Number,Number>(xAxis,yAxis);
 		areaChart.setTitle("depot value in relation to times traded");
 

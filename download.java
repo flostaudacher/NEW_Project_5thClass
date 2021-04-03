@@ -15,8 +15,7 @@ public class download {
 	private static final File DIRECTORYDATA= new File ("C:\\Users\\flost\\eclipse-workspace\\ETF_BACKTESTING_BONUS\\data");
 	public static void download() {
 		fillMonthsArray();
-		String symbol = getSymbol();
-		setSymbol(symbol);
+		String symbol = stockSymbol;
 		int zeit = 1;
 		for (int i = 0; i < PARTS_OF_API; i++) {
 			url[i] = createurl(i,symbol);
@@ -41,15 +40,6 @@ public class download {
 			}
 		}
 		zeit = 0;
-	}
-	private static void setSymbol(String symbol) {
-		stockSymbol = symbol;
-	}
-	public static String getSymbol() {
-		Scanner scanner = new Scanner(System.in); 
-		System.out.print("Zu untersuchenedes Symbol : ");
-		String s = scanner.nextLine();
-		return s;
 	}
 	public static void deleteCurrentFiles() {
 		File location= new File ("C:\\Users\\flost\\eclipse-workspace\\ETF_BACKTESTING_BONUS\\data");

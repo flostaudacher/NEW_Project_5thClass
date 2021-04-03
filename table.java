@@ -13,14 +13,13 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
 public class table extends Pane{
-	public static TableView<Tabellenklasse> table = new TableView<Tabellenklasse>();
 	public static ObservableList<Tabellenklasse> data = FXCollections.observableArrayList();
 
 	static DecimalFormat f = new DecimalFormat("#0.00");
 
 	@SuppressWarnings("unchecked")
 	public static VBox tableCreat() {
-
+		TableView<Tabellenklasse> table = new TableView<Tabellenklasse>();
 		final Label label = new Label("Trading History");
 		label.setFont(new Font("Arial", 20));
 		table.setEditable(false);
@@ -75,10 +74,11 @@ public class table extends Pane{
 
 		table.setItems(data);
 		table.getColumns().addAll(Datum, Positionen, Kaufpreis, Verkaufspreis,Umsatz);
-		table.minWidth(510);
+		table.minWidth(550);
 		final VBox vbox = new VBox();
-		vbox.setMinWidth(510);
+		vbox.setMinWidth(550);
 		vbox.getChildren().addAll(label, table);
+		vbox.autosize();
 
 		return vbox;
 	}

@@ -32,8 +32,8 @@ public class DBmanager {
 		String sql = "insert into aktie (Symbol,Datum,Zeitpunkt,StockValue,Weekday) values (?,?,?,?,?)";
 		PreparedStatement stm = null;
 		try {
-			stm = con.prepareStatement(sql);;
-			Date date = Date.valueOf(stock.getDate());
+			stm = con.prepareStatement(sql);
+			Date date = Date.valueOf(stock.getDate());	// hier könnte 
 			stm.setInt(1, stock.getSymbol());		
 			stm.setDate(2, date);
 			//System.out.println(stock.getDate() + "  &  " + stock.getTimestamp()); // hier fragen wieso dieser Tag und der Tag der tatsächlich eingetragen wird sich unterscheiden
@@ -76,16 +76,18 @@ public class DBmanager {
 		System.out.println(result.size());
 		return result;	
 	}
-	public boolean stockRowAlreadyExists(Connection con, int i, String datum, String zeitpunkt) throws SQLException{
+	public boolean stockRowAlreadyExists(Connection con, aktie a) throws SQLException{
 		boolean result = false;
 		PreparedStatement stm = null;
 		ResultSet rs = null; 
 		try {
-			String sql = "select count(*) from aktie where (Symbol = ? and Datum = ? and Zeitpunkt = ?)";
+			String sql = "select count(*) from aktie where (Symbol = ? and Datum = ? and Zeitpunkt = ? and StockValue = ? and Weekday = ?)";
 			stm = con.prepareStatement(sql);
-			stm.setInt(1,i);
-			stm.setString(2, datum);
-			stm.setString(3, zeitpunkt);
+			stm.setInt(1, a.getSymbol());
+			stm.setString(2, a.getDate());
+			stm.setString(3, a.getTimestamp().toString());
+			stm.setFloat(4, a.getValue());
+			stm.setString(5, a.getWeekday());
 			rs = stm.executeQuery();
 			if (rs.next()) {
 				int anzahl = rs.getInt(1);

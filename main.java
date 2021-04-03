@@ -12,24 +12,34 @@ public class main {
 	public static frequenzy bestTime = null;
 	public static Map<String,Integer> frequenzyMap = new HashMap<String,Integer>();
 	public static void main(String[] args) throws ClassNotFoundException, SQLException, ParseException {
-		download.deleteCurrentFiles();
-		DBmanager db = new DBmanager();
-		Connection con = db.getConnection();
-		download.deleteCurrentFiles();
-		download.download();
+		
+		Datavizualise.main(args);
+		
+		
+		//
 		//combination.combine();
 		/*String [][] stock = new String[combination.getLengthOfNeededArray()][combination.getCols()];
 		aktie[] a = new aktie[combination.getLengthOfNeededArray()];
 		combination.fillStockArray(stock);
 		combination.pushToDatabase(con, a, stock,db);*/
-		combination.VonCSVinDatenbank(con, db);
+		
+		
+	}
+	public static void work() throws ClassNotFoundException, SQLException, ParseException{
+		download.deleteCurrentFiles();
+		DBmanager db = new DBmanager();
+		Connection con = db.getConnection();
+		download.deleteCurrentFiles();
+		if (db.stockAlreadyExistsInAktienList(con, download.stockSymbol) == false) {
+			download.download();
+			combination.VonCSVinDatenbank(con, db);
+		}
 		minimalValueTimeList = db.getTimeofMinOrMaxofDay(con,db.getIDfromStock(con, download.stockSymbol), 1); // 1 für min 2 für max
 		String BuyTime = getBuyTime(1,minimalValueTimeList); // für min 
 		maximalValueTimeList = db.getTimeofMinOrMaxofDay(con,db.getIDfromStock(con, download.stockSymbol), 2);
 		String SellTime = getBuyTime(2,maximalValueTimeList); // für max 
 		ArrayList<aktie> eintrage = db.readStockValues(con, db.getIDfromStock(con, download.stockSymbol));
 		umsertzungStrategie.handel(eintrage, BuyTime, SellTime);
-		Datavizualise.main(args);
 	}
 	static String getBuyTime(int option, ArrayList<String> list) {
 		// TODO Auto-generated method stub
@@ -49,16 +59,13 @@ public class main {
 		}
 		bestTime = sortForBestTime(FList);
 		if (option == 1) {
-			System.out.println("Bester Zeitpunkt Uhrzeit = "+ bestTime.getTime() + " Anzahl der Minimalwerte = " + bestTime.getTimesMinVal());
 			return bestTime.getTime();
 		} else {
-			System.out.println("Bester Zeitpunkt Uhrzeit = "+ bestTime.getTime() + " Anzahl der Maximalwerte = " + bestTime.getTimesMinVal());
 			return bestTime.getTime();
 		}
 	}
 	private static frequenzy sortForBestTime(ArrayList<frequenzy> fList) {
 		frequenzy temp;
-		System.out.println(fList);
 		if (fList.size() > 1) 
 		{
 			for (int x = 0; x < fList.size(); x++) 

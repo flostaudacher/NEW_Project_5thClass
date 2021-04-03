@@ -8,7 +8,7 @@ public class umsertzungStrategie {
 	static double buyValue;
 	static double sellValue;
 	public static ArrayList<Trade> History = new ArrayList<Trade>();
-	static String s = "Mo";
+	private static String s = "Mo";
 
 	public static String handel(ArrayList<aktie> handel, String buyTime, String sellTime) {
 		String dayOfBuy = null; 
@@ -31,6 +31,7 @@ public class umsertzungStrategie {
 				dayOfBuy = null;
 				zaehlerVerkauf ++;
 				kaufe = 0;
+				textfeld.calcProfitFactor(stückzahl,buyValue,sellValue);
 				Trade t = new Trade(handel.get(Rowc).getDate(),depotValue,stückzahl,buyValue,sellValue,buyValue < sellValue);
 				History.add(t);
 				stückzahl = 0;
@@ -56,6 +57,9 @@ public class umsertzungStrategie {
 		depotValue = depotValue + stückzahl * (ValueSell);
 		sellValue = ValueSell;
 
+	}
+	public static void setDayofBuy(String dayOfBuy) {
+		s = dayOfBuy;
 	}
 	public static double getValueAtSell() {
 		// TODO Auto-generated method stub

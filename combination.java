@@ -105,21 +105,22 @@ public class combination {
 	}
 	
 	static void VonCSVinDatenbank(Connection con, DBmanager db) throws SQLException, ParseException {
-		for (int i = download.fileName.length-1 ; i >= 0  ; i = i -1 ) {
+		if (db.stockAlreadyExistsInAktienList(con, download.stockSymbol) == false ){
+			aktienListe l = new aktienListe (1, download.stockSymbol);
+			db.newAktieInAktienListe(con, l);
+		}
+		for (int i = download.fileName.length; i >= 0  ; i = i -1 ) {
 			Scanner sc= null;
 			try 
 			{
 				sc= new Scanner (new BufferedReader(new FileReader(download.fileName[i])));
 				sc.nextLine();
 				while (sc.hasNextLine()) {
-					System.out.println("Fülle gelich datenab nk 1");
 					String temp[] = new String[7];
 					InputLine = sc.nextLine();
 					InputLine = InputLine.replaceAll(" ", ",");
 					String[] inArr = InputLine.split(",");
 					for (int x = 0; x < inArr.length; x++) {
-						System.out.println(temp.length);
-						System.out.println(inArr.length);
 						temp[x%(temp.length)]=inArr[x];
 					}
 					Rowc++;
@@ -130,32 +131,27 @@ public class combination {
 					String d = ar[0];
 					String t = ar[1];
 					aktie a = new aktie(db.getIDfromStock(con, download.stockSymbol), d, combination.toSQLTime(t), val);
-					System.out.println(a);
 					dataList.add(a);
 				}
 			}catch (Exception e) {
 				System.out.println(e);
 			}
 		}
-		System.out.println("Fülle gelich datenab nk 3");
 		pushCSVToDatabase(con,db);
 	}
 	static void pushCSVToDatabase(Connection con,  DBmanager db) throws SQLException, ParseException {
 		int Passcounter = 0;
 		int Errorcounter = 0;
-		if (db.stockAlreadyExistsInAktienList(con, download.stockSymbol) == false ){
-			aktienListe l = new aktienListe (1, download.stockSymbol);
-			db.newAktieInAktienListe(con, l);
-		}
 		for (int Rowc = 0; Rowc < dataList.size(); Rowc++) {
-			System.out.println("Fülle gelich datenab nk 3");
-			boolean okay = db.stockRowAlreadyExists(con,db.getIDfromStock(con, download.stockSymbol),dataList.get(Rowc).getDate().toString(), dataList.get(Rowc).getTimestamp().toString());
-			if (okay==true) {
+			boolean okay = db.stockRowAlreadyExists(con,dataList.get(Rowc));
+			if (okay == true) {
+				if (dataList.get(Rowc).getTimestamp().before(combination.toSQLTime("16:00:00")) && dataList.get(Rowc).getTimestamp().after(combination.toSQLTime("08:00:00"))) {
 				aktie temp = dataList.get(Rowc);
-				System.out.println(temp);
 				db.saveNewSpecificStockValue(con,temp);
 				Passcounter++;
-			}else {
+				}
+			}if (okay==false) {
+				System.out.println(dataList.get(Rowc));
 				Errorcounter++;
 			}
 		}

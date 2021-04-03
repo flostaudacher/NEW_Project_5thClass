@@ -8,7 +8,6 @@ public class vizualizingMethods {
 	public static void createTheChart(Series<Number, Number> data) {
 
 		for (int Rowc = 1; Rowc < umsertzungStrategie.History.size(); Rowc++) {
-			
 				data.getData().add(new XYChart.Data<Number, Number>( Rowc, umsertzungStrategie.History.get(Rowc).getDepotWert()));
 		}
 	}
